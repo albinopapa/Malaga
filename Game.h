@@ -51,7 +51,8 @@ private:
         E_BLUE = 2
     };
 
-    struct Global_Laser{
+    struct Global_Laser
+    {
         int          level;
         const int    level1_speed = 250;
         const int    level2_speed = 375;
@@ -63,7 +64,8 @@ private:
         int          count;
     };
 
-    struct Global_Enemy{
+    struct Global_Enemy
+    {
         unsigned char level1_color[ 3 ] = { 158,156,114 };
         unsigned char level2_color[ 3 ] = { 0,255,255 };
         unsigned char level3_color[ 3 ] = { 86,188,84 };
@@ -84,7 +86,8 @@ private:
         int           speed;
     };
     
-    struct Laser{
+    struct Laser
+    {
         float x[ MAX_LASERS ];
         int   y[ MAX_LASERS ];
     };
@@ -97,7 +100,8 @@ private:
         unsigned char color[ 3 ];
     };
 
-    struct MGame{
+    struct MGame
+    {
         int       score;
         const int score_x = 600;
         const int score_y = 566;
@@ -135,7 +139,8 @@ private:
         */
     };
 
-    struct Ship{
+    struct Ship
+    {
         int          x;
         const int    y = 569;
         int          width;
