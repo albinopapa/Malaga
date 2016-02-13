@@ -43,20 +43,106 @@ private:
         LASER,
         ENEMY
     };
+
     enum RGB_COLOR
     {
         E_RED = 0,
         E_GREEN = 1,
         E_BLUE = 2
     };
+
+    struct Global_Laser{
+        int          level;
+        const int    level1_speed = 250;
+        const int    level2_speed = 375;
+        const int    level3_speed = 600;
+        char         multiple;
+        unsigned int speed;
+        int          width;
+        int          height;
+        int          count;
+    };
+
+    struct Global_Enemy{
+        unsigned char level1_color[ 3 ] = { 158,156,114 };
+        unsigned char level2_color[ 3 ] = { 0,255,255 };
+        unsigned char level3_color[ 3 ] = { 86,188,84 };
+        unsigned char level4_color[ 3 ] = { 79,87,193 };
+        unsigned char color[ 3 ];
+        const char    level1_hp = 3;
+        const char    level2_hp = 10;
+        const char    level3_hp = 20;
+        const char    level4_hp = 50;
+        const char    level5_hp = 100;
+        const char    level6_hp = 200;
+        int           level;
+        int           count;
+        int           wait_count;
+        int           wait_time;
+        int           width;
+        int           height;
+        int           speed;
+    };
+    
+    struct Laser{
+        float x[ MAX_LASERS ];
+        int   y[ MAX_LASERS ];
+    };
+
     struct Enemy
     {
         int           x;
         int           y;
         int           hp;
-        // unsigned int  speed;
         unsigned char color[ 3 ];
     };
+
+    struct MGame{
+        int       score;
+        const int score_x = 600;
+        const int score_y = 566;
+        bool      is_over;
+        char      level;
+        const int level1 = 0;
+        const int level2 = 10;
+        const int level3 = 20;
+        const int level4 = 30;
+        const int level5 = 40;
+        const int level6 = 50;
+        const int digit_width = 20;
+        /*
+            const int       score_number_widths[ 9 ] = {15,7,15,15,16,15,16,16,16,16}
+            0_width = 15;
+            0_height = 24;
+            1_width = 7;
+            1_height = 24;
+            2_width = 15;
+            2_height = 24;
+            3_width = 15;
+            3_height = 24;
+            4_width = 16;
+            4_height = 24;
+            5_width = 15;
+            5_height = 24;
+            6_width = 16;
+            6_height = 24;
+            7_width = 16;
+            7_height = 24;
+            8_width = 16;
+            8_height = 24;
+            9_width = 16;
+            9_height = 24;
+        */
+    };
+
+    struct Ship{
+        int          x;
+        const int    y = 569;
+        int          width;
+        int          height;
+        unsigned int speed;
+    };
+
 private:
     void ComposeFrame();
     /********************************/
@@ -77,8 +163,6 @@ private:
     void Update_Enemy( float delta_time );
     void Update_Keyboard_Input( float delta_time );
     void Update_Progression();
-
-    // void Shift_Memory( int current_index,int item_count,GAME_ITEM item );
     void Null_Mem(int index, GAME_ITEM item);
     void Restart_Game();
 
@@ -96,83 +180,15 @@ private:
     /*  User Variables              */
         
     Timer timer;
-
     // int px, py, radius;
-    // const unsigned int speed = 250;
-    int             game_score;
-    const int       game_score_x = 600;
-    const int       game_score_y = 566;
-    const int       digit_width = 20;
-    //const int       score_number_widths[ 9 ] = {15,7,15,15,16,15,16,16,16,16}
-    // 0_width = 15;
-    // 0_height = 24;
-    // 1_width = 7;
-    // 1_height = 24;
-    // 2_width = 15;
-    // 2_height = 24;
-    // 3_width = 15;
-    // 3_height = 24;
-    // 4_width = 16;
-    // 4_height = 24;
-    // 5_width = 15;
-    // 5_height = 24;
-    // 6_width = 16;
-    // 6_height = 24;
-    // 7_width = 16;
-    // 7_height = 24;
-    // 8_width = 16;
-    // 8_height = 24;
-    // 9_width = 16;
-    // 9_height = 24;
-
-    bool      game_is_over;
-    
-    int       ship_x;
-    const int ship_y = 569;
-    int       ship_width;
-    int       ship_height;
-    unsigned int       ship_speed;
-
-    float        laser_x[ MAX_LASERS ];
-    int          laser_y[ MAX_LASERS ];
-    int          laser_level;
-    const int    laser_level1_speed = 250;
-    const int    laser_level2_speed = 375;
-    const int    laser_level3_speed = 600;
-    char         laser_multiple;
-    unsigned int laser_speed;
-    int          laser_width;
-    int          laser_height;
-    int          laser_count;
-
+    Global_Laser  global_laser;
+    Global_Enemy  global_enemy;
+    Laser         laser[ MAX_LASERS ];
     Enemy         enemy[ MAX_ENEMIES ];
-    unsigned char enemy_level1_color[ 3 ] = { 158,156,114 };
-    unsigned char enemy_level2_color[ 3 ] = { 0,255,255 };
-    unsigned char enemy_level3_color[ 3 ] = { 86,188,84 };
-    unsigned char enemy_level4_color[ 3 ] = { 79,87,193 };
-    unsigned char enemy_color[ 3 ];
-    const char    enemy_level1_hp = 3;
-    const char    enemy_level2_hp = 10;
-    const char    enemy_level3_hp = 20;
-    const char    enemy_level4_hp = 50;
-    const char    enemy_level5_hp = 100;
-    const char    enemy_level6_hp = 200;
-    int           enemy_hp;
-    int           enemy_level;
-    int           enemy_count;
-    int           enemy_wait_count;
-    int           enemy_wait_time;
-    int           enemy_width;
-    int           enemy_height;
-    int           enemy_speed;
 
-    char      game_level;
-    const int game_level1 = 0;
-    const int game_level2 = 10;
-    const int game_level3 = 20;
-    const int game_level4 = 30;
-    const int game_level5 = 40;
-    const int game_level6 = 50;
+    MGame game;
+
+    Ship ship;
 
     bool      up_is_pressed;
     bool      enter_is_pressed;
