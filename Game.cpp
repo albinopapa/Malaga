@@ -26,27 +26,8 @@ Game::Game( HWND hWnd,const KeyboardServer& kServer,const MouseServer& mServer )
 	audio( hWnd ),
 	kbd( kServer ),
 	mouse( mServer ),
-    global_enemy.level( 0 ),
-    // global_enemy.hp( global_enemy.level1_hp ),
-    // game.level( game.level1 ),
-    game.score( 0 ),
-    game.is_over( false ),
-    ship.x( 385 ),
-    ship.speed( 250 ),
-    ship.width( 30 ),
-    ship.height( 30 ),
-    // global_laser.speed( global_laser.level1_speed ),
-    global_laser.count( 0 ),
-    global_laser.width( 3 ),
-    global_laser.height( 10 ),
     enter_is_pressed( false ),
-    up_is_pressed( false ),
-    global_enemy.speed( 150 ),
-    global_enemy.count( 0 ),
-    global_enemy.wait_count( 0 ),
-    global_enemy.wait_time( 80 ),
-    global_enemy.width( 150 ),
-    global_enemy.height( 10 )
+    up_is_pressed( false )
 {
 	srand( (unsigned int)time( NULL ) );
     for (int index = 0; index < MAX_ENEMIES; index++)
@@ -1815,11 +1796,11 @@ void Game::Deploy_Enemy(){
     global_enemy.wait_count++;
 }
 
-void Game::Null_Mem(int index,game.ITEM item){
+void Game::Null_Mem(int index,GAME_ITEM item){
     if( item == ENEMY )
     {
         enemy[ index ].x = NULL;
-        enemy[ index ].y = NULL;
+        enemy[ index ].x = NULL;
         enemy[ index ].hp= NULL;
         for (int i = 0; i < 3; i++)
         {
@@ -1829,8 +1810,8 @@ void Game::Null_Mem(int index,game.ITEM item){
     }
     else if( item == LASER )
     {
-        laser.x[ index ] = NULL;
-        laser.y[ index ] = NULL;
+        laser[ index ].x = NULL;
+        laser[ index ].y = NULL;
         global_laser.count--;
     }
 }
@@ -2024,7 +2005,7 @@ void Game::Update_Laser( float delta_time ){
             // Shift_Memory( index_laser,global_laser.count,LASER);
             continue;
         }
-        laser.y[ index_laser ] -= frameStep;
+        laser[ index_laser ].y -= frameStep;
     }
 }
 
@@ -2076,22 +2057,22 @@ void Game::ComposeFrame(){
                 //   \ | | /
                 if( i % 4 == 0 )
                 {
-                    laser.x[ i ] -= 3.5f;
-                    Draw_global_laser.Diagonal( laser.x[ i ],laser.y[ i ],"Left" );
+                    laser[ i ].x -= 3.5f;
+                    Draw_Laser_Diagonal( laser[ i ].x,laser[ i ].y,"Left" );
                 }
                 else if( i % 4 == 3 )
                 {
-                    laser.x[ i ] += 3.5f;
-                    Draw_global_laser.Diagonal( laser.x[ i ],laser.y[ i ],"Right" );
+                    laser[ i ].x += 3.5f;
+                    Draw_Laser_Diagonal( laser[ i ].x,laser[ i ].y,"Right" );
                 }
                 else
                 {
-                    Draw_Laser( (int)laser.x[ i ],laser.y[ i ] );
+                    Draw_Laser( (int)laser[ i ].x,laser[ i ].y );
                 }
             }
             else
             {
-                Draw_Laser( (int)laser.x[ i ],laser.y[ i ] );
+                Draw_Laser( (int)laser[ i ].x,laser[ i ].y );
             }
         }
         for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )

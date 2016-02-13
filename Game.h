@@ -58,10 +58,10 @@ private:
         const int    level2_speed = 375;
         const int    level3_speed = 600;
         char         multiple;
-        unsigned int speed;
-        int          width;
-        int          height;
-        int          count;
+        unsigned int speed = 250;
+        int          width = 3;
+        int          height = 10;
+        int          count = 0;
     };
 
     struct Global_Enemy
@@ -77,19 +77,20 @@ private:
         const char    level4_hp = 50;
         const char    level5_hp = 100;
         const char    level6_hp = 200;
-        int           level;
-        int           count;
-        int           wait_count;
-        int           wait_time;
-        int           width;
-        int           height;
-        int           speed;
+        int           level = 1;
+        int           count = 0;
+        int           wait_count = 0;
+        int           wait_time = 80;
+        int           width = 150;
+        int           height = 10;
+        int           speed = 150;
+        int           hp;
     };
     
     struct Laser
     {
-        float x[ MAX_LASERS ];
-        int   y[ MAX_LASERS ];
+        float x;
+        int   y;
     };
 
     struct Enemy
@@ -102,10 +103,10 @@ private:
 
     struct MGame
     {
-        int       score;
+        int       score = 0;
         const int score_x = 600;
         const int score_y = 566;
-        bool      is_over;
+        bool      is_over = false;
         char      level;
         const int level1 = 0;
         const int level2 = 10;
@@ -141,11 +142,11 @@ private:
 
     struct Ship
     {
-        int          x;
+        int          x = 385;
         const int    y = 569;
-        int          width;
-        int          height;
-        unsigned int speed;
+        int          width  = 30;
+        int          height = 30;
+        unsigned int speed = 250;
     };
 
 private:
