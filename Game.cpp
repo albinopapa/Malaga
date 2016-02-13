@@ -30,15 +30,23 @@ Game::Game( HWND hWnd,const KeyboardServer& kServer,const MouseServer& mServer )
     up_is_pressed( false )
 {
 	srand( (unsigned int)time( NULL ) );
-    for (int index = 0; index < MAX_ENEMIES; index++)
+    // Nullify enemy array
+    for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
     {
-        enemy[index].x = NULL;
-        enemy[index].y = NULL;
-        enemy[index].hp = NULL;
+        enemy[ index_enemy ].x = NULL;
+        enemy[ index_enemy ].y = NULL;
+        enemy[ index_enemy ].hp = NULL;
         for (int i = 0; i < 3; i++)
         {
-            enemy[index].color[i] = NULL;
+            enemy[ index_enemy ].color[i] = NULL;
         }
+    }
+    // Nullify laser array
+    for( int index_laser = 0; index_laser < MAX_LASERS; index_laser++ )
+    {
+        laser[ index_laser ].direction = EMPTY;
+        laser[ index_laser ].x        = NULL;
+        laser[ index_laser ].y        = NULL;
     }
 }
 
@@ -94,9 +102,9 @@ void Game::Draw_Laser( int x,int y ){
     }
 }
 
-void Game::Draw_Laser_Diagonal( float x,int y,char* direction){
+void Game::Draw_Laser_Diagonal( float x,int y,LASER_DIRECTION direction){
     float old_x = x;
-    if( direction == "Left")
+    if( direction == LEFT)
     {
         float old_x = x;
         for( int r = 0; r < 3; r++ )
@@ -110,7 +118,7 @@ void Game::Draw_Laser_Diagonal( float x,int y,char* direction){
             x = old_x + 1;
         }
     }
-    else if( direction == "Right" )
+    else if( direction == RIGHT )
     {
         for( int r = 0; r < 3; r++ )
         {
@@ -1812,6 +1820,7 @@ void Game::Null_Mem(int index,GAME_ITEM item){
     {
         laser[ index ].x = NULL;
         laser[ index ].y = NULL;
+        laser[ index ].direction = EMPTY;
         global_laser.count--;
     }
 }
@@ -1825,42 +1834,82 @@ void Game::Update_Keyboard_Input( float delta_time){
         if ( !up_is_pressed && global_laser.count < MAX_LASERS)
         {
             up_is_pressed = true;
-            if( game.level == 1 )
+            int l_r_m = 0;
+            int laser_count = 0;
+            for( int index_laser = 0; index_laser < game.level; index_laser++)
             {
-                laser[ global_laser.count ].x = (float)ship.x + 15.0f;
-                laser[ global_laser.count ].y = 564; 
-                global_laser.count += 1;
+                // Add laser if memory is empty
+                if(laser[ index_laser ].direction == EMPTY )
+                {
+                    if( game.level == 1)
+                    {
+                        laser[index_laser].x           = (float)ship.x + 15.0f;
+                    }
+                    else if( game.level == 2)
+                    {
+                        switch( l_r_m % 2 )
+                        {
+                            case 0:
+                                laser[ index_laser ].x    = (float)ship.x + 10.0f;
+                                break;
+                            case 1:
+                                laser[ index_laser + 1].x = (float)ship.x + 20.0f;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if( game.level == 3)
+                    {
+                        switch( l_r_m % 3 )
+                        {
+                            case 0:
+                                laser[ index_laser ].x    = (float)ship.x + 5.0f;
+                                break;
+                            case 1:
+                                laser[ index_laser ].x = (float)ship.x + 15.0f;
+                                break;
+                            case 2:
+                                laser[ index_laser ].x = (float)ship.x + 25.0f;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if( game.level == 4 )
+                    {
+                        switch(l_r_m % 4)
+                        {
+                            case 0:
+                                laser[ index_laser ].direction = LEFT;
+                                laser[ index_laser ].x    = (float)ship.x + 0.0f;
+                                break;
+                            case 1:
+                                laser[ index_laser ].direction = MIDDLE;
+                                laser[ index_laser].x = (float)ship.x + 10.0f;
+                                break;
+                            case 2:
+                                laser[ index_laser ].direction = MIDDLE;
+                                laser[ index_laser ].x = (float)ship.x + 20.0f;
+                                break;
+                            case 3:
+                                laser[ index_laser ].direction = RIGHT;
+                                laser[ index_laser ].x = (float)ship.x + 30.0f;
+                                break;
+                            default:
+                                break;
+                        }
+                        l_r_m++;
+                    }
+                    else
+                    {
+                        laser[ index_laser ].direction = MIDDLE;
+                    }
+                    laser[ index_laser ].y             = 564; 
+                    global_laser.count++;
+                }
             }
-            else if( game.level == 2 )
-            {
-                laser[ global_laser.count ].x    = (float)ship.x + 10.0f;
-                laser[ global_laser.count + 1].x = (float)ship.x + 20.0f;
-                laser[ global_laser.count ].y    = 564; 
-                laser[ global_laser.count + 1].y = 564; 
-                global_laser.count += 2;
-            }
-            else if( game.level == 3 )
-            {
-                laser[ global_laser.count ].x    = (float)ship.x + 5.0f;
-                laser[ global_laser.count + 1].x = (float)ship.x + 15.0f;
-                laser[ global_laser.count + 2].x = (float)ship.x + 25.0f;
-                laser[ global_laser.count ].y    = 564; 
-                laser[ global_laser.count + 1].y = 564; 
-                laser[ global_laser.count + 2].y = 564; 
-                global_laser.count += 3;
-            }
-            else if( game.level == 4 )
-            {
-                laser[ global_laser.count ].x    = (float)ship.x + 0.0f;
-                laser[ global_laser.count + 1].x = (float)ship.x + 10.0f;
-                laser[ global_laser.count + 2].x = (float)ship.x + 20.0f;
-                laser[ global_laser.count + 3].x = (float)ship.x + 30.0f;
-                laser[ global_laser.count ].y    = 564; 
-                laser[ global_laser.count + 1].y = 564; 
-                laser[ global_laser.count + 2].y = 564; 
-                laser[ global_laser.count + 3].y = 564; 
-                global_laser.count += 4;
-            }
+
         }
     }
     else
@@ -1958,10 +2007,24 @@ void Game::Update_Progression(){
 }
 
 void Game::Update_Laser( float delta_time ){
-	int frameStep = delta_time * global_laser.speed;
-    for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
+    int frameStep = delta_time * global_laser.speed;
+    // Check if lasers hits enemy
+
+    // if (global_laser.count == 3)
+    // {
+    //     global_laser.count = 3;
+    // }
+    // for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
+    for (int index_laser = 0, laser_count = 0;
+         laser_count != global_laser.count &&
+         laser_count < global_laser.count; index_laser++)
     {
-        // Check if laser hits enemy
+        if (laser[ index_laser ].x == 0 &&
+            laser[ index_laser ].y == 0)
+        {
+            continue;
+        }
+        laser_count++;
         for( int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++ )
         {
             if( (int)laser[ index_laser ].x + global_laser.width > enemy[ index_enemy ].x &&
@@ -1980,29 +2043,39 @@ void Game::Update_Laser( float delta_time ){
                     enemy[ index_enemy ];
                     game.score++;
                 }
-                // Shift_Memory( index_laser,global_laser.count,LASER );
+                // Remove laser from memory
                 Null_Mem( index_laser,LASER );
             }
         }
+    }
+    // Check if lasers hits screen edges
+    // for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
+    for (int index_laser = 0, laser_count = 0;
+         laser_count != global_laser.count &&
+         laser_count < global_laser.count; index_laser++)
+    {
+        if (laser[ index_laser ].x == 0 &&
+            laser[ index_laser ].y == 0)
+        {
+            continue;
+        }
+        laser_count++;
         // Check if laser hits top of screen
         if     (laser[ index_laser ].y - frameStep <= 0)
         {
             Null_Mem( index_laser,LASER );
-            // Shift_Memory( index_laser,global_laser.count,LASER);
             continue;
         }
         // Check if laser hits screen left
         else if(laser[ index_laser ].x - frameStep <= 0)
         {
             Null_Mem( index_laser,LASER );
-            // Shift_Memory( index_laser,global_laser.count,LASER);
             continue;
         }
         // Check if laser hits screen right
         else if(laser[ index_laser ].x + frameStep + 3 > SCREENWIDTH - 1)
         {
             Null_Mem( index_laser,LASER );
-            // Shift_Memory( index_laser,global_laser.count,LASER);
             continue;
         }
         laser[ index_laser ].y -= frameStep;
@@ -2047,34 +2120,39 @@ void Game::Restart_Game(){
 void Game::ComposeFrame(){
     if( !game.is_over )
     {
-        // float temp_x
+        // Draw ship stuff
         Draw_Ship( ship.x,ship.y);
-        for( int i = 0; i < global_laser.count; i++ )
+        // Draw laser stuff
+        for (int index_laser = 0, laser_count = 0;
+             laser_count != global_laser.count &&
+             laser_count < global_laser.count; index_laser++)
         {
-            if( global_laser.multiple == 4)
+            if( laser[ index_laser ].x == 0 &&
+                laser[ index_laser ].y == 0)
             {
-                // 4 lasers, 0 diag left, 1 & 2 straight 3 diag right
-                //   \ | | /
-                if( i % 4 == 0 )
+                continue;
+            }
+            laser_count++;
+            if( laser[ index_laser ].direction != MIDDLE )
+            {
+                if( laser[ index_laser ].direction == LEFT )
                 {
-                    laser[ i ].x -= 3.5f;
-                    Draw_Laser_Diagonal( laser[ i ].x,laser[ i ].y,"Left" );
+                    laser[ index_laser ].x -= 3.5f;
                 }
-                else if( i % 4 == 3 )
+                else if( laser[ index_laser ].direction == RIGHT )
                 {
-                    laser[ i ].x += 3.5f;
-                    Draw_Laser_Diagonal( laser[ i ].x,laser[ i ].y,"Right" );
+                    laser[ index_laser ].x += 3.5f;
                 }
-                else
-                {
-                    Draw_Laser( (int)laser[ i ].x,laser[ i ].y );
-                }
+                Draw_Laser_Diagonal((int)laser[index_laser].x,
+                                     laser[index_laser].y,
+                                     laser[index_laser].direction);
             }
             else
             {
-                Draw_Laser( (int)laser[ i ].x,laser[ i ].y );
+                Draw_Laser( (int)laser[ index_laser ].x,laser[ index_laser ].y );
             }
         }
+        // Draw enemy stuff
         for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )
         {
             Draw_Enemy( enemy[ index_enemy ].x,enemy[ index_enemy ].y,
@@ -2083,6 +2161,5 @@ void Game::ComposeFrame(){
                 enemy[ index_enemy ].color[ E_BLUE ]);
         }
     }
-    // if( game.score )
     Draw_Score( game.score_x,game.score_y );
 }

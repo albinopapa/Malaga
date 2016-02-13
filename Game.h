@@ -38,6 +38,13 @@ public:
     ~Game();
     void Go();
 private:
+    enum LASER_DIRECTION
+    {
+        LEFT,
+        RIGHT,
+        MIDDLE,
+        EMPTY
+    };
     enum GAME_ITEM
     {
         LASER,
@@ -76,7 +83,7 @@ private:
         const char    level3_hp = 20;
         const char    level4_hp = 50;
         const char    level5_hp = 100;
-        const char    level6_hp = 200;
+        const unsigned char    level6_hp = 200;
         int           level = 1;
         int           count = 0;
         int           wait_count = 0;
@@ -91,6 +98,11 @@ private:
     {
         float x;
         int   y;
+        LASER_DIRECTION direction = MIDDLE; // default
+        const float level1_x_offset[1] = {15.0f};
+        const float level2_x_offset[2] = {10.0f,20.0f};
+        const float level3_x_offset[3] = {5.0f,15.0f,25.0f};
+        const float level4_x_offset[4] = {0.0f,10.0f,20.0f,30.0f};
     };
 
     struct Enemy
@@ -103,7 +115,7 @@ private:
 
     struct MGame
     {
-        int       score = 0;
+        int       score = 30;
         const int score_x = 600;
         const int score_y = 566;
         bool      is_over = false;
@@ -158,7 +170,7 @@ private:
     void Draw_Digit( int digit, int x,int y );
     void Draw_Ship( int x,int y );
     void Draw_Laser( int x,int y );
-    void Draw_Laser_Diagonal( float x,int y,char* direction );
+    void Draw_Laser_Diagonal( float x,int y,LASER_DIRECTION direction);
     void Draw_Enemy(int x, int y,
         unsigned char red,
         unsigned char green,
