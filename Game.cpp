@@ -132,38 +132,7 @@ void Game::Draw_Laser( int x,int y,LASER_DIRECTION direction ){
         }
     }
 }
-/*
-void Game::Draw_Laser_Diagonal( float x,int y,LASER_DIRECTION direction){
-    float old_x = x;
-    if( direction == LEFT)
-    {
-        // float old_x = x;
-        for( int r = 0; r < 3; r++ )
-        {
-            for( int c = 0; c < 10; c++ )
-            {
-                gfx.PutPixel( x + r, y + c,255,50,50 );
-                // Draws top to bottom so use +
-                x += 1.0f;
-            }
-            x = old_x + 1;
-        }
-    }
-    else if( direction == RIGHT )
-    {
-        for( int r = 0; r < 3; r++ )
-        {
-            for( int c = 0; c < 10; c++ )
-            {
-                gfx.PutPixel( x + r, y + c,255,50,50 );
-                // Draws top to bottom so use -
-                x -= 1.0;
-            }
-            x = old_x - 1;
-        }
-    }
-}
-*/
+
 void Game::Reverse_String( char* pChar ){
     int temp; int e = 0; int s = 0;
     while( pChar[e] != 0 )
@@ -1945,33 +1914,47 @@ void Game::Update_Keyboard_Input( float delta_time){
 void Game::Shift_Memory( int current_index,int item_count,GAME_ITEM item ){
     if( item == LASER )
     {
+        // We don't need to loop if the index is the same as MAX
         if( current_index == MAX_LASERS - 1 )
         {
             Null_Mem( current_index,LASER);
         }
         else
         {
-            for( int index_laser = current_index; 
-                     laser[index_laser].index != EMPTY &&
-                     index_laser + 1 <= MAX_LASERS; index_laser++ )
+            // Declare index outside loop to retain value
+            // This loop takes the memory states of the adjacent state
+            // and copies it to the index. It will do this based on the
+            // index that is given to the function. Therefore the array
+            // will always be tidy since all values will be stored in the
+            // lowest available index of the memory array.
+            int index_laser;
+            for( index_laser = current_index; 
+                     laser[ index_laser ].index != EMPTY &&
+                     index_laser + 1 < MAX_LASERS; index_laser++ )
             {
                 laser[ index_laser ].direction = laser[ index_laser + 1 ].direction;
                 laser[ index_laser ].x         = laser[ index_laser + 1 ].x;
                 laser[ index_laser ].y         = laser[ index_laser + 1 ].y;
                 laser[ index_laser ].index     = laser[ index_laser + 1 ].index;
             }
+            // This Null_Mem will clear the last memory slot that gets
+            // skipped after the last loop.
+            Null_Mem( index_laser,LASER);
         }
         global_laser.count--;
     }
     else if( item == ENEMY )
     {
-        if( current_index == MAX_LASERS - 1 )
+        if( current_index == MAX_ENEMIES - 1 )
         {
-            Null_Mem( current_index,LASER);
+            Null_Mem( current_index,ENEMY);
         }
         else
         {
-            for( int index_enemy = current_index; index_enemy < item_count - 1; index_enemy++ )
+            int index_enemy;
+            for( index_enemy = current_index; 
+                     enemy[ index_enemy ].index != EMPTY &&
+                     index_enemy + 1 < MAX_ENEMIES; index_enemy++ )
             {
                 enemy[ index_enemy ].x          = enemy[ index_enemy + 1 ].x;
                 enemy[ index_enemy ].y          = enemy[ index_enemy + 1 ].y;
@@ -1981,6 +1964,7 @@ void Game::Shift_Memory( int current_index,int item_count,GAME_ITEM item ){
                     enemy[ index_enemy ].color[ index_color ] = enemy[ index_enemy + 1].color[ index_color + 1];
                 }
             }
+            Null_Mem( index_enemy,ENEMY);
         }
         global_enemy.count--;
     }
@@ -2054,43 +2038,32 @@ void Game::Update_Laser( float delta_time ){
                     // Shift memory slots down
                     // Shift_Memory( index_enemy,global_enemy.count,ENEMY );
                     Shift_Memory( index_enemy,global_enemy.count,ENEMY );
-                    // Null_Mem( index_enemy,ENEMY );
-                    // global_enemy.count--;
                     game.score++;
                 }
                 // Remove laser from memory
                 Shift_Memory( index_laser,1,LASER );
-                // global_laser.count--;
             }
         }
     }
     // Check if lasers hits screen edges
     for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
     {
-        // if (laser[ index_laser ].x == 0 &&
-        //     laser[ index_laser ].y == 0)
-        // {
-        //     continue;
-        // }
         // Check if laser hits top of screen
         if     (laser[ index_laser ].y - frameStep <= 0)
         {
             Shift_Memory( index_laser,1,LASER );
-            // global_laser.count--;
             continue;
         }
         // Check if laser hits screen left
         else if(laser[ index_laser ].x - frameStep <= 0)
         {
             Shift_Memory( index_laser,1,LASER );
-            // global_laser.count--;
             continue;
         }
         // Check if laser hits screen right
         else if(laser[ index_laser ].x + frameStep + 3 > SCREENWIDTH - 1)
         {
             Shift_Memory( index_laser,1,LASER );
-            // global_laser.count--;
             continue;
         }
         laser[ index_laser ].y -= frameStep;
@@ -2115,8 +2088,6 @@ void Game::Update_Enemy( float delta_time ){
         if ( enemy[ index_enemy ].y + frameStep >= 599 - 10)
         {
             Shift_Memory( index_enemy,1,ENEMY );
-            // global_enemy.count--;
-            // Null_Mem( index_enemy,ENEMY );
             continue;
         }
         // Update movement
