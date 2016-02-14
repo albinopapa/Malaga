@@ -2141,9 +2141,26 @@ void Game::ComposeFrame(){
         // Draw laser stuff
         for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
         {
-            Draw_Laser((int)laser[ index_laser ].x,
-                            laser[ index_laser ].y,
-                            laser[ index_laser ].direction);
+            if( laser[ index_laser ].direction == LEFT )
+            {
+                laser[ index_laser ].x -= 3.5f;
+                Draw_Laser((int)laser[ index_laser ].x,
+                                laser[ index_laser ].y,
+                                laser[ index_laser ].direction);
+            }
+            else if( laser[ index_laser ].direction == RIGHT )
+            {
+                laser[ index_laser ].x += 3.5f;
+                Draw_Laser((int)laser[ index_laser ].x,
+                                laser[ index_laser ].y,
+                                laser[ index_laser ].direction);
+            }
+            else if( laser[ index_laser ].direction == MIDDLE )
+            {
+                Draw_Laser((int)laser[ index_laser ].x,
+                                laser[ index_laser ].y,
+                                laser[ index_laser ].direction);
+            }
         }
         // Draw enemy stuff
         for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )
