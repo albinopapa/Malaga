@@ -1834,82 +1834,28 @@ void Game::Update_Keyboard_Input( float delta_time){
         if ( !up_is_pressed && global_laser.count < MAX_LASERS)
         {
             up_is_pressed = true;
-            int l_r_m = 0;
-            int laser_count = 0;
-            for( int index_laser = 0; index_laser < game.level; index_laser++)
+            switch( game.level )
             {
-                // Add laser if memory is empty
-                if(laser[ index_laser ].direction == EMPTY )
-                {
-                    if( game.level == 1)
-                    {
-                        laser[index_laser].x           = (float)ship.x + 15.0f;
-                    }
-                    else if( game.level == 2)
-                    {
-                        switch( l_r_m % 2 )
-                        {
-                            case 0:
-                                laser[ index_laser ].x    = (float)ship.x + 10.0f;
-                                break;
-                            case 1:
-                                laser[ index_laser + 1].x = (float)ship.x + 20.0f;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    else if( game.level == 3)
-                    {
-                        switch( l_r_m % 3 )
-                        {
-                            case 0:
-                                laser[ index_laser ].x    = (float)ship.x + 5.0f;
-                                break;
-                            case 1:
-                                laser[ index_laser ].x = (float)ship.x + 15.0f;
-                                break;
-                            case 2:
-                                laser[ index_laser ].x = (float)ship.x + 25.0f;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    else if( game.level == 4 )
-                    {
-                        switch(l_r_m % 4)
-                        {
-                            case 0:
-                                laser[ index_laser ].direction = LEFT;
-                                laser[ index_laser ].x    = (float)ship.x + 0.0f;
-                                break;
-                            case 1:
-                                laser[ index_laser ].direction = MIDDLE;
-                                laser[ index_laser].x = (float)ship.x + 10.0f;
-                                break;
-                            case 2:
-                                laser[ index_laser ].direction = MIDDLE;
-                                laser[ index_laser ].x = (float)ship.x + 20.0f;
-                                break;
-                            case 3:
-                                laser[ index_laser ].direction = RIGHT;
-                                laser[ index_laser ].x = (float)ship.x + 30.0f;
-                                break;
-                            default:
-                                break;
-                        }
-                        l_r_m++;
-                    }
-                    else
-                    {
-                        laser[ index_laser ].direction = MIDDLE;
-                    }
-                    laser[ index_laser ].y             = 564; 
-                    global_laser.count++;
-                }
-            }
+                case 1:
+                    Set_Lasers( global_laser.level1_direction,
+                        global_laser.level1_x_offset );
+                    break;
+                case 2:
+                    Set_Lasers( global_laser.level2_direction,
+                        global_laser.level2_x_offset );
+                    break;
+                case 3:
+                    Set_Lasers( global_laser.level3_direction,
+                        global_laser.level3_x_offset );
+                    break;
+                case 4:
+                    Set_Lasers( global_laser.level4_direction,
+                        global_laser.level4_x_offset );
+                    break;
+                default:
+                break;
 
+            }
         }
     }
     else
@@ -1955,6 +1901,20 @@ void Game::Update_Keyboard_Input( float delta_time){
     else
     {
         enter_is_pressed = false;
+    }
+}
+
+void Game::Set_Lasers(LASER_DIRECTION* direction,const float* offset){
+    for( int index_laser = 0; index_laser < MAX_LASERS; index_laser++ )
+    {
+        if(laser[ index_laser ].direction == EMPTY )
+        for( int laser_count = 0; laser_count < global_laser.multiple; laser_count++)
+        {
+            laser[ laser_count ].x         = (float)ship.x + offset[ laser_count ];
+            laser[ laser_count ].direction = direction[ laser_count ];
+            laser[ laser_count ].y         = 564; 
+            global_laser.count++;
+        }
     }
 }
 

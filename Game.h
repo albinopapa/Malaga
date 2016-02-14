@@ -69,6 +69,14 @@ private:
         int          width = 3;
         int          height = 10;
         int          count = 0;
+        const float     level1_x_offset[1] = {15.0f};
+        const float     level2_x_offset[2] = {10.0f,20.0f};
+        const float     level3_x_offset[3] = {5.0f,15.0f,25.0f};
+        const float     level4_x_offset[4] = {0.0f,10.0f,20.0f,30.0f};
+        LASER_DIRECTION level1_direction[1] = {MIDDLE};
+        LASER_DIRECTION level2_direction[2] = {MIDDLE,MIDDLE};
+        LASER_DIRECTION level3_direction[3] = {MIDDLE,MIDDLE,MIDDLE};
+        LASER_DIRECTION level4_direction[4] = {LEFT,MIDDLE,MIDDLE,LEFT};
     };
 
     struct Global_Enemy
@@ -99,10 +107,6 @@ private:
         float x;
         int   y;
         LASER_DIRECTION direction = MIDDLE; // default
-        const float level1_x_offset[1] = {15.0f};
-        const float level2_x_offset[2] = {10.0f,20.0f};
-        const float level3_x_offset[3] = {5.0f,15.0f,25.0f};
-        const float level4_x_offset[4] = {0.0f,10.0f,20.0f,30.0f};
     };
 
     struct Enemy
@@ -178,6 +182,7 @@ private:
     void Deploy_Enemy();
 
     void Update_Laser( float delta_time );
+    void Set_Lasers(LASER_DIRECTION* direction,const float* offset);
     void Update_Enemy( float delta_time );
     void Update_Keyboard_Input( float delta_time );
     void Update_Progression();
