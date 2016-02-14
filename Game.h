@@ -42,9 +42,15 @@ private:
     {
         LEFT,
         RIGHT,
-        MIDDLE,
-        EMPTY
+        MIDDLE
     };
+
+    enum MEMORY_STATE
+    {
+        EMPTY,
+        USED
+    };
+
     enum GAME_ITEM
     {
         LASER,
@@ -76,7 +82,7 @@ private:
         LASER_DIRECTION level1_direction[1] = {MIDDLE};
         LASER_DIRECTION level2_direction[2] = {MIDDLE,MIDDLE};
         LASER_DIRECTION level3_direction[3] = {MIDDLE,MIDDLE,MIDDLE};
-        LASER_DIRECTION level4_direction[4] = {LEFT,MIDDLE,MIDDLE,LEFT};
+        LASER_DIRECTION level4_direction[4] = {LEFT,MIDDLE,MIDDLE,RIGHT};
     };
 
     struct Global_Enemy
@@ -100,6 +106,7 @@ private:
         int           height = 10;
         int           speed = 150;
         int           hp;
+        char          multiple = 1; // default
     };
     
     struct Laser
@@ -107,6 +114,7 @@ private:
         float x;
         int   y;
         LASER_DIRECTION direction = MIDDLE; // default
+        MEMORY_STATE index = EMPTY;         // default
     };
 
     struct Enemy
@@ -115,6 +123,7 @@ private:
         int           y;
         int           hp;
         unsigned char color[ 3 ];
+        MEMORY_STATE index = EMPTY; // default
     };
 
     struct MGame
@@ -173,8 +182,8 @@ private:
     void Draw_Score( int x,int y );
     void Draw_Digit( int digit, int x,int y );
     void Draw_Ship( int x,int y );
-    void Draw_Laser( int x,int y );
-    void Draw_Laser_Diagonal( float x,int y,LASER_DIRECTION direction);
+    void Draw_Laser( int x,int y,LASER_DIRECTION direction );
+    // void Draw_Laser_Diagonal( float x,int y,LASER_DIRECTION direction);
     void Draw_Enemy(int x, int y,
         unsigned char red,
         unsigned char green,
@@ -182,11 +191,13 @@ private:
     void Deploy_Enemy();
 
     void Update_Laser( float delta_time );
-    void Set_Lasers(LASER_DIRECTION* direction,const float* offset);
+    void Set_New_Lasers(LASER_DIRECTION* direction,const float* offset);
+    void Set_New_Enemy( unsigned char* color,int hp );
     void Update_Enemy( float delta_time );
     void Update_Keyboard_Input( float delta_time );
     void Update_Progression();
     void Null_Mem(int index, GAME_ITEM item);
+    void Shift_Memory(int current_index, int item_count, GAME_ITEM item);
     void Restart_Game();
 
     void Int_To_String( unsigned int num, char* chars, int buff_length );
