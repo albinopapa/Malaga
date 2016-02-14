@@ -95,8 +95,8 @@ private:
         const char    level1_hp = 3;
         const char    level2_hp = 10;
         const char    level3_hp = 20;
-        const char    level4_hp = 50;
-        const char    level5_hp = 100;
+        const char    level4_hp = 30;
+        const char    level5_hp = 40;
         const unsigned char    level6_hp = 200;
         int           level = 1;
         int           count = 0;
@@ -128,7 +128,7 @@ private:
 
     struct MGame
     {
-        int       score = 30;
+        int       score = 0;
         const int score_x = 600;
         const int score_y = 566;
         bool      is_over = false;
@@ -198,6 +198,7 @@ private:
     void Update_Progression();
     void Null_Mem(int index, GAME_ITEM item);
     void Shift_Memory(int current_index, int item_count, GAME_ITEM item);
+    void Null_Game_Items();
     void Restart_Game();
 
     void Int_To_String( unsigned int num, char* chars, int buff_length );

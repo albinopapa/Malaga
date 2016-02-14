@@ -30,24 +30,9 @@ Game::Game( HWND hWnd,const KeyboardServer& kServer,const MouseServer& mServer )
     up_is_pressed( false )
 {
 	srand( (unsigned int)time( NULL ) );
+    Restart_Game();
     // Nullify enemy array
-    for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
-    {
-        enemy[ index_enemy ].x = NULL;
-        enemy[ index_enemy ].y = NULL;
-        enemy[ index_enemy ].hp = NULL;
-        for (int i = 0; i < 3; i++)
-        {
-            enemy[ index_enemy ].color[i] = NULL;
-        }
-    }
-    // Nullify laser array
-    for( int index_laser = 0; index_laser < MAX_LASERS; index_laser++ )
-    {
-        // laser[ index_laser ].direction = EMPTY;
-        laser[ index_laser ].x         = NULL;
-        laser[ index_laser ].y         = NULL;
-    }
+
 }
 
 Game::~Game()
@@ -2042,6 +2027,7 @@ void Game::Update_Laser( float delta_time ){
                 }
                 // Remove laser from memory
                 Shift_Memory( index_laser,1,LASER );
+                index_laser--;
             }
         }
     }
@@ -2052,20 +2038,34 @@ void Game::Update_Laser( float delta_time ){
         if     (laser[ index_laser ].y - frameStep <= 0)
         {
             Shift_Memory( index_laser,1,LASER );
+            // =====================================
+            // =====================================
+            //   THIS IS HOLY GOD IMPORTANT
+            //   step the index back if you removed
+            //   something from memory
+            //   so that you don't skip updating it
+            //   in the next loop. Think about it.
+            index_laser--;
             continue;
         }
         // Check if laser hits screen left
         else if(laser[ index_laser ].x - frameStep <= 0)
         {
             Shift_Memory( index_laser,1,LASER );
+            index_laser--;
             continue;
         }
         // Check if laser hits screen right
         else if(laser[ index_laser ].x + frameStep + 3 > SCREENWIDTH - 1)
         {
             Shift_Memory( index_laser,1,LASER );
+            index_laser--;
             continue;
         }
+    }
+    // Move remaining lasers that haven't hit anything... (facepalm myself)
+    for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
+    {
         laser[ index_laser ].y -= frameStep;
     }
 }
@@ -2088,14 +2088,27 @@ void Game::Update_Enemy( float delta_time ){
         if ( enemy[ index_enemy ].y + frameStep >= 599 - 10)
         {
             Shift_Memory( index_enemy,1,ENEMY );
+            index_enemy--;
             continue;
         }
-        // Update movement
+    }
+    // Update movement
+    for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )
+    {
         enemy[ index_enemy ].y += frameStep;
     }
 }
 
 void Game::Restart_Game(){
+    for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
+    {
+        Null_Mem( index_enemy,ENEMY );
+    }
+    // Nullify laser array
+    for (int index_laser = 0; index_laser < MAX_LASERS; index_laser++)
+    {
+        Null_Mem( index_laser,LASER );
+    }
     game.is_over = false;
     game.score = 0;
     ship.x = 385;
