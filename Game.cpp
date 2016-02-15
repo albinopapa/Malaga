@@ -31,19 +31,19 @@ Game::Game( HWND hWnd,const KeyboardServer& kServer,const MouseServer& mServer )
     up_is_pressed( false ),
     space_is_pressed( false )
 {
-    srand((unsigned int)time(NULL));
+    srand( (unsigned int)time(NULL) );
     game.is_over            = false;
     game.score              = 0;
     ship.x                  = 385;
     global_enemy.count      = 0;
     global_laser.count      = 0;
     // Nullify enemy array
-    for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
+    for( int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++ )
     {
         Null_Mem( index_enemy,ENEMY );
     }
     // Nullify laser array
-    for (int index_laser = 0; index_laser < MAX_LASERS; index_laser++)
+    for( int index_laser = 0; index_laser < MAX_LASERS; index_laser++ )
     {
         Null_Mem( index_laser,LASER );
     }
@@ -151,7 +151,7 @@ void Game::Reverse_String( char* pChar ){
 }
 
 void Game::Int_To_String( unsigned int num, char* chars,int buff_length ){
-    if ( num == 0 )
+    if( num == 0 )
     {
         chars[ 0 ] = '0';
     }
@@ -169,7 +169,7 @@ void Game::Int_To_String( unsigned int num, char* chars,int buff_length ){
 }
 
 void Game::Draw_Score( int x,int y ){
-    char score[11] = { NULL };
+    char score[ 11 ] = { NULL };
     Int_To_String( game.score,score,sizeof( score ) );
     for( int i = 0; score[ i ] != '\0'; i++ )
     {
@@ -193,14 +193,14 @@ void Game::Draw_Enemy( int x,int y,
 void Game::Set_New_Enemy( unsigned char* color,int hp ){
     for( int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++ )
     {
-        if(enemy[ index_enemy ].index == EMPTY )
+        if( enemy[ index_enemy ].index == EMPTY  )
         {
             for( int enemy_count = 0; enemy_count < global_enemy.multiple; enemy_count++)
             {
                 // shift a memory slot each loop while
                 // using index_laser as the base starting point
                 // since it was delcared outside of this loop
-                enemy[ index_enemy + enemy_count].x     = rand() % (799 - global_enemy.width * 2);
+                enemy[ index_enemy + enemy_count].x     = rand() % ( 799 - global_enemy.width * 2 );
                 enemy[ index_enemy + enemy_count].y     = 0;
                 enemy[ index_enemy + enemy_count].hp    = hp;
                 enemy[ index_enemy + enemy_count].index = USED;
@@ -215,7 +215,7 @@ void Game::Set_New_Enemy( unsigned char* color,int hp ){
     }
 }
 
-void Game::Set_New_Lasers(LASER_DIRECTION* direction,const float* offset){
+void Game::Set_New_Lasers( LASER_DIRECTION* direction,const float* offset ){
     for( int index_laser = 0; index_laser < MAX_LASERS; index_laser++ )
     {
         if(laser[ index_laser ].index == EMPTY &&
@@ -238,9 +238,9 @@ void Game::Set_New_Lasers(LASER_DIRECTION* direction,const float* offset){
 }
 
 void Game::Deploy_Enemy( float delta_time ){
-    if ( global_enemy.wait_count >= global_enemy.wait_time && global_enemy.count < MAX_ENEMIES )
+    if( global_enemy.wait_count >= global_enemy.wait_time && global_enemy.count < MAX_ENEMIES )
     {
-        if ( global_enemy.count < MAX_ENEMIES )
+        if( global_enemy.count < MAX_ENEMIES )
         {
             switch( game.level )
             {
@@ -265,14 +265,14 @@ void Game::Deploy_Enemy( float delta_time ){
     global_enemy.wait_count += delta_time;
 }
 
-void Game::Null_Mem(int index,GAME_ITEM item){
+void Game::Null_Mem( int index,GAME_ITEM item ){
     if( item == ENEMY )
     {
         enemy[ index ].x     = NULL;
         enemy[ index ].y     = NULL;
         enemy[ index ].hp    = NULL;
         enemy[ index ].index = EMPTY;
-        for (int i = 0; i < 3; i++)
+        for( int i = 0; i < 3; i++ )
         {
             enemy[index].color[ i ] = NULL;
         }
@@ -289,9 +289,9 @@ void Game::Null_Mem(int index,GAME_ITEM item){
 void Game::Update_Keyboard_Input( float delta_time){
     int frameStep = delta_time * ship.speed;
     // Shoot lasers
-    if ( kbd.UpIsPressed() )
+    if( kbd.UpIsPressed() )
     {
-        if ( !up_is_pressed && global_laser.count < MAX_LASERS)
+        if( !up_is_pressed && global_laser.count < MAX_LASERS)
         {
             if( global_laser.count > 4 )
                 global_laser.count = global_laser.count;
@@ -324,7 +324,7 @@ void Game::Update_Keyboard_Input( float delta_time){
         up_is_pressed = false;
     }
     // Ship movement
-    if (kbd.LeftIsPressed())
+    if( kbd.LeftIsPressed() )
     {
         if( ship.x - frameStep <= 0)
         {
@@ -335,7 +335,7 @@ void Game::Update_Keyboard_Input( float delta_time){
         	ship.x += -frameStep;
         }
     }
-    else if (kbd.RightIsPressed())
+    else if( kbd.RightIsPressed() )
     {
         if( ship.x + frameStep > 799 - 30)
         {
@@ -347,7 +347,7 @@ void Game::Update_Keyboard_Input( float delta_time){
         }
     }
     // Restart game
-    if ( kbd.EnterIsPressed() )
+    if( kbd.EnterIsPressed() )
     {
         if( !enter_is_pressed )
         {
@@ -475,7 +475,7 @@ void Game::Update_Progression(){
 void Game::Update_Laser( float delta_time ){
     int frameStep = delta_time * global_laser.speed;
     // Check if lasers hits enemy
-    for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
+    for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
     {
         for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )
         {
@@ -502,10 +502,10 @@ void Game::Update_Laser( float delta_time ){
         }
     }
     // Check if lasers hits screen edges
-    for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
+    for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
     {
         // Check if laser hits top of screen
-        if     (laser[ index_laser ].y - frameStep <= 0)
+        if( laser[ index_laser ].y - frameStep <= 0 )
         {
             Shift_Memory( index_laser,1,LASER );
             // =====================================
@@ -526,7 +526,7 @@ void Game::Update_Laser( float delta_time ){
             continue;
         }
         // Check if laser hits screen right
-        else if(laser[ index_laser ].x + frameStep + 3 > SCREENWIDTH - 1)
+        else if( laser[ index_laser ].x + frameStep + 3 > SCREENWIDTH - 1 )
         {
             Shift_Memory( index_laser,1,LASER );
             index_laser--;
@@ -534,7 +534,7 @@ void Game::Update_Laser( float delta_time ){
         }
     }
     // Move remaining lasers that haven't hit anything... (facepalm myself)
-    for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
+    for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
     {
         if( laser[ index_laser ].direction == LEFT )
         {
@@ -563,7 +563,7 @@ void Game::Update_Enemy( float delta_time ){
             game.is_over = true;
         }
         // Check if hits bottom of screen
-        if ( enemy[ index_enemy ].y + frameStep >= 599 - 10)
+        if( enemy[ index_enemy ].y + frameStep >= 599 - 10)
         {
             Shift_Memory( index_enemy,1,ENEMY );
             index_enemy--;
@@ -578,12 +578,12 @@ void Game::Update_Enemy( float delta_time ){
 }
 
 void Game::Restart_Game(){
-    for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
+    for( int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++ )
     {
         Null_Mem( index_enemy,ENEMY );
     }
     // Nullify laser array
-    for (int index_laser = 0; index_laser < MAX_LASERS; index_laser++)
+    for( int index_laser = 0; index_laser < MAX_LASERS; index_laser++ )
     {
         Null_Mem( index_laser,LASER );
     }
@@ -601,7 +601,7 @@ void Game::ComposeFrame(){
         // Draw ship stuff
         Draw_Ship( ship.x,ship.y);
         // Draw laser stuff
-        for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
+        for( int index_laser = 0; index_laser < global_laser.count; index_laser++ )
         {
             Draw_Laser((int)laser[ index_laser ].x,
                             laser[ index_laser ].y,
