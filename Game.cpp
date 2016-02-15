@@ -100,7 +100,7 @@ void Game::Draw_Laser( int x,int y,LASER_DIRECTION direction ){
                 // Draws top to bottom so use +
                 x += 1.0f;
             }
-            x = old_x + 1;
+            x = old_x;
         }
     }
     else if( direction == RIGHT )
@@ -111,9 +111,9 @@ void Game::Draw_Laser( int x,int y,LASER_DIRECTION direction ){
             {
                 gfx.PutPixel( x + r, y + c,255,50,50 );
                 // Draws top to bottom so use -
-                x -= 1.0;
+                x -= 1.0f;
             }
-            x = old_x - 1;
+            x = old_x - 3;
         }
     }
 }
@@ -1767,9 +1767,8 @@ void Game::Set_New_Lasers(LASER_DIRECTION* direction,const float* offset){
 void Game::Deploy_Enemy(){
     if ( global_enemy.wait_count >= global_enemy.wait_time && global_enemy.count < MAX_ENEMIES )
     {
-        if ( !up_is_pressed && global_laser.count < MAX_LASERS)
+        if ( global_laser.count < MAX_LASERS)
         {
-            up_is_pressed = true;
             switch( game.level )
             {
                 case 1:
@@ -1799,7 +1798,7 @@ void Game::Null_Mem(int index,GAME_ITEM item){
     if( item == ENEMY )
     {
         enemy[ index ].x     = NULL;
-        enemy[ index ].x     = NULL;
+        enemy[ index ].y     = NULL;
         enemy[ index ].hp    = NULL;
         enemy[ index ].index = EMPTY;
         for (int i = 0; i < 3; i++)
@@ -1943,10 +1942,10 @@ void Game::Shift_Memory( int current_index,int item_count,GAME_ITEM item ){
             {
                 enemy[ index_enemy ].x          = enemy[ index_enemy + 1 ].x;
                 enemy[ index_enemy ].y          = enemy[ index_enemy + 1 ].y;
-                enemy[ index_enemy ].hp         = enemy[ index_enemy ].hp ;
-                for( int index_color; index_color < 3; index_color++ )
+                enemy[ index_enemy ].hp         = enemy[ index_enemy + 1].hp ;
+                for( int index_color = 0; index_color < 3; index_color++ )
                 {
-                    enemy[ index_enemy ].color[ index_color ] = enemy[ index_enemy + 1].color[ index_color + 1];
+                    enemy[ index_enemy ].color[ index_color ] = enemy[ index_enemy + 1].color[ index_color ];
                 }
             }
             Null_Mem( index_enemy,ENEMY);
@@ -2008,7 +2007,7 @@ void Game::Update_Laser( float delta_time ){
     // Check if lasers hits enemy
     for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
     {
-        for( int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++ )
+        for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )
         {
             if( (int)laser[ index_laser ].x + global_laser.width > enemy[ index_enemy ].x &&
                 (int)laser[ index_laser ].x < enemy[ index_enemy ].x + global_enemy.width &&
@@ -2023,6 +2022,7 @@ void Game::Update_Laser( float delta_time ){
                     // Shift memory slots down
                     // Shift_Memory( index_enemy,global_enemy.count,ENEMY );
                     Shift_Memory( index_enemy,global_enemy.count,ENEMY );
+                    index_enemy--;
                     game.score++;
                 }
                 // Remove laser from memory

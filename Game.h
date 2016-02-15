@@ -27,7 +27,7 @@
 #include "Timer.h"
 
 #define MAX_LASERS 100
-#define MAX_ENEMIES 1
+#define MAX_ENEMIES 8
 #define SCREENWIDTH 800
 #define SCREENHEIGHT 600
 
