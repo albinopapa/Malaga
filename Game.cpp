@@ -28,12 +28,25 @@ Game::Game( HWND hWnd,const KeyboardServer& kServer,const MouseServer& mServer )
 	kbd( kServer ),
 	mouse( mServer ),
     enter_is_pressed( false ),
-    up_is_pressed( false )
+    up_is_pressed( false ),
+    space_is_pressed( false )
 {
-	srand( (unsigned int)time( NULL ) );
-    Restart_Game();
+    srand((unsigned int)time(NULL));
+    game.is_over            = false;
+    game.score              = 0;
+    ship.x                  = 385;
+    global_enemy.count      = 0;
+    global_laser.count      = 0;
     // Nullify enemy array
-
+    for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
+    {
+        Null_Mem( index_enemy,ENEMY );
+    }
+    // Nullify laser array
+    for (int index_laser = 0; index_laser < MAX_LASERS; index_laser++)
+    {
+        Null_Mem( index_laser,LASER );
+    }
 }
 
 Game::~Game()
@@ -69,7 +82,6 @@ void Game::Go()
             Update_Enemy( dt );
         }
     }
-
 	gfx.BeginFrame();
 	ComposeFrame();
 	gfx.EndFrame();
