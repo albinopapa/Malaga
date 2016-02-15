@@ -262,7 +262,7 @@ void Game::Deploy_Enemy( float delta_time ){
         }
         global_enemy.wait_count = 0.0f;
     }
-    global_enemy.wait_count++;
+    global_enemy.wait_count += delta_time;
 }
 
 void Game::Null_Mem(int index,GAME_ITEM item){
@@ -538,11 +538,11 @@ void Game::Update_Laser( float delta_time ){
     {
         if( laser[ index_laser ].direction == LEFT )
         {
-            laser[ index_laser ].x -= 3.5f;
+            laser[ index_laser ].x -= frameStep + 3.5f;
         }
         else if( laser[ index_laser ].direction == RIGHT )
         {
-            laser[ index_laser ].x += 3.5f;
+            laser[ index_laser ].x += frameStep + 3.5f;
         }
         laser[ index_laser ].y -= frameStep;
     }

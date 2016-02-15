@@ -101,10 +101,10 @@ private:
         int                 level              = 1;
         int                 count              = 0;
         float               wait_count         = 0;
-        float               wait_time          = 160.0f;
+        float               wait_time          = 2.0f;
         int                 width              = 150;
         int                 height             = 10;
-        int                 speed              = 150;
+        float               speed              = 150.0f;
         int                 hp;
         char                multiple           = 1; // default
     };
@@ -119,8 +119,8 @@ private:
 
     struct Enemy
     {
-        int           x;
-        int           y;
+        float         x;
+        float         y;
         int           hp;
         unsigned char color[ 3 ];
         MEMORY_STATE index = EMPTY; // default
