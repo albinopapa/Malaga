@@ -52,7 +52,7 @@ void Game::Go()
     {
         Update_Progression();
         Update_Keyboard_Input( dt );
-        Deploy_Enemy();
+        Deploy_Enemy( dt );
         Update_Laser( dt );
         Update_Enemy( dt );
     }
@@ -1764,10 +1764,12 @@ void Game::Set_New_Lasers(LASER_DIRECTION* direction,const float* offset){
     }
 }
 
-void Game::Deploy_Enemy(){
+void Game::Deploy_Enemy( float delta_time ){
+    if( delta_time >= 1.0f )
+        delta_time = delta_time;
     if ( global_enemy.wait_count >= global_enemy.wait_time && global_enemy.count < MAX_ENEMIES )
     {
-        if ( global_laser.count < MAX_LASERS)
+        if ( global_enemy.count < MAX_ENEMIES )
         {
             switch( game.level )
             {
@@ -1788,7 +1790,7 @@ void Game::Deploy_Enemy(){
 
             }
         }
-        global_enemy.wait_count = 0;
+        global_enemy.wait_count = 0.0f;
         // global_enemy.count++;
     }
     global_enemy.wait_count++;
@@ -1942,7 +1944,8 @@ void Game::Shift_Memory( int current_index,int item_count,GAME_ITEM item ){
             {
                 enemy[ index_enemy ].x          = enemy[ index_enemy + 1 ].x;
                 enemy[ index_enemy ].y          = enemy[ index_enemy + 1 ].y;
-                enemy[ index_enemy ].hp         = enemy[ index_enemy + 1].hp ;
+                enemy[ index_enemy ].hp         = enemy[ index_enemy + 1 ].hp ;
+                enemy[ index_enemy ].index      = enemy[ index_enemy + 1 ].index;
                 for( int index_color = 0; index_color < 3; index_color++ )
                 {
                     enemy[ index_enemy ].color[ index_color ] = enemy[ index_enemy + 1].color[ index_color ];

@@ -66,19 +66,19 @@ private:
 
     struct Global_Laser
     {
-        int          level;
-        const int    level1_speed = 250;
-        const int    level2_speed = 375;
-        const int    level3_speed = 600;
-        char         multiple;
-        unsigned int speed = 250;
-        int          width = 3;
-        int          height = 10;
-        int          count = 0;
-        const float     level1_x_offset[1] = {15.0f};
-        const float     level2_x_offset[2] = {10.0f,20.0f};
-        const float     level3_x_offset[3] = {5.0f,15.0f,25.0f};
-        const float     level4_x_offset[4] = {0.0f,10.0f,20.0f,30.0f};
+        int             level;
+        const int       level1_speed        = 250;
+        const int       level2_speed        = 375;
+        const int       level3_speed        = 600;
+        char            multiple;
+        unsigned int    speed               = 250;
+        int             width               = 3;
+        int             height              = 10;
+        int             count               = 0;
+        const float     level1_x_offset[1]  = {15.0f};
+        const float     level2_x_offset[2]  = {10.0f,20.0f};
+        const float     level3_x_offset[3]  = {5.0f,15.0f,25.0f};
+        const float     level4_x_offset[4]  = {0.0f,10.0f,20.0f,30.0f};
         LASER_DIRECTION level1_direction[1] = {MIDDLE};
         LASER_DIRECTION level2_direction[2] = {MIDDLE,MIDDLE};
         LASER_DIRECTION level3_direction[3] = {MIDDLE,MIDDLE,MIDDLE};
@@ -87,26 +87,26 @@ private:
 
     struct Global_Enemy
     {
-        unsigned char level1_color[ 3 ] = { 158,156,114 };
-        unsigned char level2_color[ 3 ] = { 0,255,255 };
-        unsigned char level3_color[ 3 ] = { 86,188,84 };
-        unsigned char level4_color[ 3 ] = { 79,87,193 };
-        unsigned char color[ 3 ];
-        const char    level1_hp = 3;
-        const char    level2_hp = 10;
-        const char    level3_hp = 20;
-        const char    level4_hp = 30;
-        const char    level5_hp = 40;
-        const unsigned char    level6_hp = 200;
-        int           level = 1;
-        int           count = 0;
-        int           wait_count = 0;
-        int           wait_time = 80;
-        int           width = 150;
-        int           height = 10;
-        int           speed = 150;
-        int           hp;
-        char          multiple = 1; // default
+        unsigned char       level1_color[ 3 ]  = { 158,156,114 };
+        unsigned char       level2_color[ 3 ]  = { 0,255,255 };
+        unsigned char       level3_color[ 3 ]  = { 86,188,84 };
+        unsigned char       level4_color[ 3 ]  = { 79,87,193 };
+        unsigned char       color[ 3 ];
+        const char          level1_hp          = 3;
+        const char          level2_hp          = 10;
+        const char          level3_hp          = 20;
+        const char          level4_hp          = 30;
+        const char          level5_hp          = 40;
+        const unsigned char level6_hp = 200;
+        int                 level              = 1;
+        int                 count              = 0;
+        float               wait_count         = 0;
+        float               wait_time          = 160.0f;
+        int                 width              = 150;
+        int                 height             = 10;
+        int                 speed              = 150;
+        int                 hp;
+        char                multiple           = 1; // default
     };
     
     struct Laser
@@ -128,17 +128,17 @@ private:
 
     struct MGame
     {
-        int       score = 0;
-        const int score_x = 600;
-        const int score_y = 566;
-        bool      is_over = false;
+        int       score       = 0;
+        const int score_x     = 600;
+        const int score_y     = 566;
+        bool      is_over     = false;
         char      level;
-        const int level1 = 0;
-        const int level2 = 10;
-        const int level3 = 20;
-        const int level4 = 30;
-        const int level5 = 40;
-        const int level6 = 50;
+        const int level1      = 0;
+        const int level2      = 10;
+        const int level3      = 20;
+        const int level4      = 30;
+        const int level5      = 40;
+        const int level6      = 50;
         const int digit_width = 20;
         /*
             const int       score_number_widths[ 9 ] = {15,7,15,15,16,15,16,16,16,16}
@@ -167,11 +167,11 @@ private:
 
     struct Ship
     {
-        int          x = 385;
-        const int    y = 569;
+        int          x      = 385;
+        const int    y      = 569;
         int          width  = 30;
         int          height = 30;
-        unsigned int speed = 250;
+        unsigned int speed  = 250;
     };
 
 private:
@@ -188,7 +188,7 @@ private:
         unsigned char red,
         unsigned char green,
         unsigned char blue);
-    void Deploy_Enemy();
+    void Deploy_Enemy( float delta_time );
 
     void Update_Laser( float delta_time );
     void Set_New_Lasers(LASER_DIRECTION* direction,const float* offset);
