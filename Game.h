@@ -141,29 +141,6 @@ private:
         const int level6      = 50;
         const int digit_width = 20;
         bool      is_paused   = false;
-        /*
-            const int       score_number_widths[ 9 ] = {15,7,15,15,16,15,16,16,16,16}
-            0_width = 15;
-            0_height = 24;
-            1_width = 7;
-            1_height = 24;
-            2_width = 15;
-            2_height = 24;
-            3_width = 15;
-            3_height = 24;
-            4_width = 16;
-            4_height = 24;
-            5_width = 15;
-            5_height = 24;
-            6_width = 16;
-            6_height = 24;
-            7_width = 16;
-            7_height = 24;
-            8_width = 16;
-            8_height = 24;
-            9_width = 16;
-            9_height = 24;
-        */
     };
 
     struct Ship
@@ -184,7 +161,6 @@ private:
     void Draw_Digit( int digit, int x,int y );
     void Draw_Ship( int x,int y );
     void Draw_Laser( int x,int y,LASER_DIRECTION direction );
-    // void Draw_Laser_Diagonal( float x,int y,LASER_DIRECTION direction);
     void Draw_Enemy(int x, int y,
         unsigned char red,
         unsigned char green,
@@ -204,7 +180,6 @@ private:
 
     void Int_To_String( unsigned int num, char* chars, int buff_length );
     void Reverse_String( char* pChar );
-    // void Set_PxPy();
 
     /********************************/
 private:
@@ -216,7 +191,6 @@ private:
     /*  User Variables              */
         
     Timer timer;
-    // int px, py, radius;
     Global_Laser  global_laser;
     Global_Enemy  global_enemy;
     Laser         laser[ MAX_LASERS ];
