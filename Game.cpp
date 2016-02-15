@@ -48,13 +48,25 @@ void Game::Go()
     float dt = timer.GetTimeMilli() * 0.001f;
     timer.StartWatch();
 #endif
-    if( !kbd.SpaceIsPressed() )
+    if( kbd.SpaceIsPressed() )
     {
-        Update_Progression();
-        Update_Keyboard_Input( dt );
-        Deploy_Enemy( dt );
-        Update_Laser( dt );
-        Update_Enemy( dt );
+        if( !space_is_pressed )
+        {
+            space_is_pressed = true;
+            game.is_paused = !game.is_paused;
+        }
+    }
+    else
+    {
+        space_is_pressed = false;
+        if( !game.is_paused )
+        {
+            Update_Progression();
+            Update_Keyboard_Input( dt );
+            Deploy_Enemy( dt );
+            Update_Laser( dt );
+            Update_Enemy( dt );
+        }
     }
 
 	gfx.BeginFrame();
@@ -2069,6 +2081,14 @@ void Game::Update_Laser( float delta_time ){
     // Move remaining lasers that haven't hit anything... (facepalm myself)
     for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
     {
+        if( laser[ index_laser ].direction == LEFT )
+        {
+            laser[ index_laser ].x -= 3.5f;
+        }
+        else if( laser[ index_laser ].direction == RIGHT )
+        {
+            laser[ index_laser ].x += 3.5f;
+        }
         laser[ index_laser ].y -= frameStep;
     }
 }
@@ -2128,26 +2148,9 @@ void Game::ComposeFrame(){
         // Draw laser stuff
         for (int index_laser = 0; index_laser < global_laser.count; index_laser++)
         {
-            if( laser[ index_laser ].direction == LEFT )
-            {
-                laser[ index_laser ].x -= 3.5f;
-                Draw_Laser((int)laser[ index_laser ].x,
-                                laser[ index_laser ].y,
-                                laser[ index_laser ].direction);
-            }
-            else if( laser[ index_laser ].direction == RIGHT )
-            {
-                laser[ index_laser ].x += 3.5f;
-                Draw_Laser((int)laser[ index_laser ].x,
-                                laser[ index_laser ].y,
-                                laser[ index_laser ].direction);
-            }
-            else if( laser[ index_laser ].direction == MIDDLE )
-            {
-                Draw_Laser((int)laser[ index_laser ].x,
-                                laser[ index_laser ].y,
-                                laser[ index_laser ].direction);
-            }
+            Draw_Laser((int)laser[ index_laser ].x,
+                            laser[ index_laser ].y,
+                            laser[ index_laser ].direction);
         }
         // Draw enemy stuff
         for( int index_enemy = 0; index_enemy < global_enemy.count; index_enemy++ )

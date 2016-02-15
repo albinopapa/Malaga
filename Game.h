@@ -140,6 +140,7 @@ private:
         const int level5      = 40;
         const int level6      = 50;
         const int digit_width = 20;
+        bool      is_paused   = false;
         /*
             const int       score_number_widths[ 9 ] = {15,7,15,15,16,15,16,16,16,16}
             0_width = 15;
@@ -227,5 +228,6 @@ private:
 
     bool      up_is_pressed;
     bool      enter_is_pressed;
+    bool      space_is_pressed;
     /********************************/
 };
