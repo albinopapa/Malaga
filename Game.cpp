@@ -240,25 +240,22 @@ void Game::Set_New_Lasers( LASER_DIRECTION* direction,const float* offset ){
 void Game::Deploy_Enemy( float delta_time ){
     if( global_enemy.wait_count >= global_enemy.wait_time && global_enemy.count < MAX_ENEMIES )
     {
-        if( global_enemy.count < MAX_ENEMIES )
+        switch( game.level )
         {
-            switch( game.level )
-            {
-                case 1:
-                    Set_New_Enemy( global_enemy.level1_color,global_enemy.level1_hp );
-                    break;
-                case 2:
-                    Set_New_Enemy( global_enemy.level2_color,global_enemy.level2_hp );
-                    break;
-                case 3:
-                    Set_New_Enemy( global_enemy.level3_color,global_enemy.level3_hp );
-                    break;
-                case 4:
-                    Set_New_Enemy( global_enemy.level4_color,global_enemy.level4_hp );
-                    break;
-                default:
+            case 1:
+                Set_New_Enemy( global_enemy.level1_color,global_enemy.level1_hp );
                 break;
-            }
+            case 2:
+                Set_New_Enemy( global_enemy.level2_color,global_enemy.level2_hp );
+                break;
+            case 3:
+                Set_New_Enemy( global_enemy.level3_color,global_enemy.level3_hp );
+                break;
+            case 4:
+                Set_New_Enemy( global_enemy.level4_color,global_enemy.level4_hp );
+                break;
+            default:
+            break;
         }
         global_enemy.wait_count = 0.0f;
     }
@@ -538,11 +535,11 @@ void Game::Update_Laser( float delta_time ){
     {
         if( laser[ index_laser ].direction == LEFT )
         {
-            laser[ index_laser ].x -= frameStep + 3.5f;
+            laser[ index_laser ].x -= frameStep;
         }
         else if( laser[ index_laser ].direction == RIGHT )
         {
-            laser[ index_laser ].x += frameStep + 3.5f;
+            laser[ index_laser ].x += frameStep;
         }
         laser[ index_laser ].y -= frameStep;
     }
