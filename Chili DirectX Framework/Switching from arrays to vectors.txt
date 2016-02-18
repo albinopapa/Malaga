@@ -1,0 +1,71 @@
+First include vector in Game.h and change your Laser and Enemy arrays into vector arrays.  
+Declaring a vector such as a vector of lasers, you use std::vector then you put the type 
+of array you want like <Laser> then give the array a name.
+
+
+Game.h
+#include <vector>
+
+class Game
+{
+	std::vector<Laser> laser;
+	std::vector<Enemy> enemy;
+}
+
+Vectors are a little different than normal arrays in that they start out without any allocated 
+memory.  Also, they can shrink and grow as needed.  You can reserve a specified amount of 
+space, which will help the vector grow without the overhead of reallocating more memory as you 
+add elements.  This will help keep things speedy.
+
+As I stated, vectors start out empty, so you will have to add objects to the array before you 
+can use them.  This can be done using the push_back or emplace_back functions.  The push_back 
+function takes as it's parameter an object that already exists and copies the object passed in.
+The emplace_back function takes as it's parameter, an object you want to create and moves the
+object that is passed in.  We will use the emplace_back function.  You'll have to change the
+laser and enemy creation functions to take this into account.
+
+To create a new enemy for instance
+Enemy e;
+e.x = rand() % SCREENWIDTH - global_enemy.width * 2;
+e.y = 0;
+for(int i = 0; i < 3; ++i)
+{
+	global_enemy.color[i] = color[i];
+}
+e.hp = hp;
+enemy.emplace_back(e);
+
+Now, for the collision and removal of elements, you will want to separate the update code from 
+the collision code into separate functions.  With the vector you will only have living enemy 
+objects, so no need to check for live ones to update.
+
+So for the update functions, we just need to loop through the vector and update the positions
+like normal arrays.
+
+Create a new function to update the status of the game objects to handle collision events, like
+reducing enemy hp and changing the game.is_over variable.  To make things easier, add a bool
+to the laser struct that signifies whether or not it is still alive, bool isAlive for instance.
+This function will be responsible for testing if enemies or lasers have gone off screen as well.
+
+Next, create a function that handles cleaning the vectors, or removing the dead objects.  To
+remove an object or a list of consecutive objects from a vector, you call the erase function.
+Erasing objects from the vector is a bit troublesome if you are doing this in a loop, so there
+is another helpful function called std::remove_if.  You will have to include the algorithm 
+header file to access it.  You can put this at the top of Game.cpp.
+
+Here is what it would look like:
+First, we use the auto keyword to save ourself a lot of typing.  If we didn't use auto, we 
+would have to type something like std::vector<Enemy>::iterator eraseEnemyFrom = ...
+
+auto eraseEnemyFrom = std::remove_if(enemy.begin(), enemy.end(), 
+		[](const Enemy &ThisEnemy)
+	{
+		bool remove = ThisEnemy.hp <= 0;
+		return remove;
+	});
+
+Now that we have the beginning of the removal list, we just need to erase all elements from 
+this point to the end of the vector.  Vector has functions called begin and end that return
+iterators, which are kind of like pointers, to the beginning of the vector .begin() or the end 
+of the vector .end().
+enemy.erase(eraseEnemyFrom, enemy.end());
