@@ -123,7 +123,7 @@ private:
 	{
 		Enemy()
 			:
-			x(0), y(0), hp(0), color({ 0,0,0 }), index(EMPTY), prop(nullptr)
+			x(0), y(0), hp(0), color{}, index(EMPTY), prop(nullptr)
 		{}
 		Enemy(int Hp, unsigned char Color[3], Global_Enemy *Props)
 			:

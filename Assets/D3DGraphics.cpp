@@ -178,11 +178,12 @@ void D3DGraphics::EndFrame()
 	result = pBackBuffer->LockRect(&backRect, NULL, NULL);
 	assert(!FAILED(result));
 
-
-	for (int y = 0; y < 600; y++)
+	D3DCOLOR *pVidIter = (D3DCOLOR *)backRect.pBits;
+	int bufSize = sizeof(D3DCOLOR) * SCREENWIDTH;
+	for (int y = 0; y < SCREENHEIGHT; ++y)
 	{
-		memcpy(&((BYTE*)backRect.pBits)[backRect.Pitch * y], &pSysBuffer[800 * y], sizeof(D3DCOLOR) * 800);
-	}	
+		memcpy(&pVidIter[y * SCREENWIDTH], &pSysBuffer[y * SCREENWIDTH], bufSize);
+	}
 
 	result = pBackBuffer->UnlockRect();
 	assert( !FAILED( result ) );
