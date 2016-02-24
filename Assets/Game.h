@@ -90,11 +90,11 @@ private:
 
 	struct Global_Enemy
 	{
-		unsigned char       level1_color[3] = { 158,156,114 };
-		unsigned char       level2_color[3] = { 0,255,255 };
-		unsigned char       level3_color[3] = { 86,188,84 };
-		unsigned char       level4_color[3] = { 79,87,193 };
-		unsigned char       color[3];
+		D3DCOLOR			level1_color = D3DCOLOR_XRGB(158, 156, 114);
+		D3DCOLOR			level2_color = D3DCOLOR_XRGB(0,255,255);
+		D3DCOLOR			level3_color = D3DCOLOR_XRGB(86,188,84);
+		D3DCOLOR			level4_color = D3DCOLOR_XRGB(79,87,193);
+		D3DCOLOR			color;
 		const char          level1_hp = 3;
 		const char          level2_hp = 10;
 		const char          level3_hp = 20;
@@ -125,20 +125,17 @@ private:
 	{
 		Enemy()
 			:
-			x(0), y(0), hp(0), color{}, index(EMPTY), prop(nullptr)
+			x(0), y(0), hp(0), color(0), index(EMPTY), prop(nullptr)
 		{}
-		Enemy(int Hp, unsigned char Color[3], Global_Enemy *Props)
+		Enemy(int Hp, D3DCOLOR Color, Global_Enemy *Props)
 			:
 			x(rand() % (SCREENWIDTH - Props->width * 2)),
 			y(0),
 			hp(Hp),			
 			index(EMPTY),
-			prop(Props)
+			prop(Props),
+			color(Color)
 		{
-			for (int i = 0; i < 3; ++i)
-			{
-				color[i] = Color[i];
-			}
 		}
 		void Update(const float DT)
 		{
@@ -147,13 +144,13 @@ private:
 		}
 		void Draw(D3DGraphics &Gfx)
 		{
-			Gfx.DrawBox(x, y, prop->width, prop->height, D3DCOLOR_XRGB(color[0], color[1], color[2]));
+			Gfx.DrawBox(x, y, prop->width, prop->height, color);
 		}
 		
 		float         x;
 		float         y;
 		int           hp;
-		unsigned char color[3];
+		D3DCOLOR color;
 		MEMORY_STATE index = EMPTY; // default
 		Global_Enemy *prop;
 	};

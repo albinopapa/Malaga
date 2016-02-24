@@ -109,7 +109,14 @@ void Game::Draw_Laser(int x, int y, LASER_DIRECTION direction) {
 	}
 	else if (direction == LEFT)
 	{
-		for (int r = 0; r < 3; r++)
+		int y2 = y + 10;
+		for (int i = 0; i < 3; ++i)
+		{
+			int x1 = x + i;
+			int x2 = x + 3 + i;
+			gfx.DrawLine(x1, y, x2, y2, 255, 50, 50);
+		}
+		/*for (int r = 0; r < 3; r++)
 		{
 			for (int c = 0; c < 10; c++)
 			{
@@ -118,11 +125,18 @@ void Game::Draw_Laser(int x, int y, LASER_DIRECTION direction) {
 				x += 1.0f;
 			}
 			x = old_x;
-		}
+		}*/
 	}
 	else if (direction == RIGHT)
 	{
-		for (int r = 0; r < 3; r++)
+		int y2 = y + 10;
+		for (int i = 0; i < 3; ++i)
+		{
+			int x1 = x - i;
+			int x2 = x - 3 - i;
+			gfx.DrawLine(x1, y, x2, y2, 255, 50, 50);
+		}
+		/*for (int r = 0; r < 3; r++)
 		{
 			for (int c = 0; c < 10; c++)
 			{
@@ -131,7 +145,7 @@ void Game::Draw_Laser(int x, int y, LASER_DIRECTION direction) {
 				x -= 1.0f;
 			}
 			x = old_x - 3;
-		}
+		}*/
 	}
 }
 
@@ -186,7 +200,7 @@ void Game::Deploy_Enemy(float delta_time)
 			switch (game.level)
 			{
 			case 1:
-				enemy.emplace_back<Enemy>({ global_enemy.level, 
+				enemy.emplace_back<Enemy>({ global_enemy.level1_hp, 
 					global_enemy.color, &global_enemy });
 				break;
 			case 2:
@@ -292,10 +306,7 @@ void Game::Update_Progression() {
 	if (game.score >= 0 && game.score < game.level2)
 	{
 		game.level = 1;
-		for (int index_color = 0; index_color < 3; index_color++)
-		{
-			global_enemy.color[index_color] = global_enemy.level1_color[index_color];
-		}
+		global_enemy.color = global_enemy.level1_color;
 		global_enemy.hp = global_enemy.level1_hp;
 		global_laser.speed = global_laser.level1_speed;
 		global_laser.multiple = 1;
@@ -305,7 +316,7 @@ void Game::Update_Progression() {
 		game.level = 2;
 		for (int index_color = 0; index_color < 3; index_color++)
 		{
-			global_enemy.color[index_color] = global_enemy.level2_color[index_color];
+			global_enemy.color = global_enemy.level2_color;
 		}
 		global_enemy.hp = global_enemy.level2_hp;
 		global_laser.speed = global_laser.level2_speed;
@@ -316,7 +327,7 @@ void Game::Update_Progression() {
 		game.level = 3;
 		for (int index_color = 0; index_color < 3; index_color++)
 		{
-			global_enemy.color[index_color] = global_enemy.level3_color[index_color];
+			global_enemy.color = global_enemy.level3_color;
 		}
 		global_enemy.hp = global_enemy.level3_hp;
 		global_laser.speed = global_laser.level3_speed;
@@ -327,7 +338,7 @@ void Game::Update_Progression() {
 		game.level = 4;
 		for (int index_color = 0; index_color < 3; index_color++)
 		{
-			global_enemy.color[index_color] = global_enemy.level4_color[index_color];
+			global_enemy.color = global_enemy.level4_color;
 		}
 		global_enemy.hp = global_enemy.level4_hp;
 		global_laser.speed = global_laser.level3_speed;
@@ -342,11 +353,11 @@ void Game::Update_Laser(float delta_time) {
 	{
 		if (l.direction == LEFT)
 		{
-			l.x -= frameStep + 3.f;
+			l.x -= frameStep * 0.3f;
 		}
 		else if (l.direction == RIGHT)
 		{
-			l.x += frameStep + 3.f;
+			l.x += frameStep * 0.3f;
 		}
 		l.y -= frameStep;
 	}
