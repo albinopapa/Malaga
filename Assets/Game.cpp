@@ -212,16 +212,16 @@ void Game::Deploy_Enemy(float delta_time)
 
 void Game::Update_Keyboard_Input(float delta_time) {
 	int frameStep = delta_time * ship.speed;
+	global_laser.count += frameStep;
+
 	// Shoot lasers
 	if (kbd.UpIsPressed())
 	{
-		if (!up_is_pressed)
+		if (laser.size() < MAX_LASERS)
 		{
-			if (laser.size() < MAX_LASERS)
+			if (global_laser.count >= global_laser.fireRate)
 			{
-				if (global_laser.count > 4)
-					global_laser.count = global_laser.count;
-				up_is_pressed = true;
+				global_laser.count = 0;
 				switch (game.level)
 				{
 				case 1:
@@ -245,10 +245,6 @@ void Game::Update_Keyboard_Input(float delta_time) {
 				}
 			}
 		}
-	}
-	else
-	{
-		up_is_pressed = false;
 	}
 	// Ship movement
 	if (kbd.LeftIsPressed())
@@ -401,6 +397,7 @@ void Game::CheckEnemyCollisions(Enemy & ThisEnemy)
 	}
 
 	// Check if enemy is hit by laser
+	bool accounted_for = false;
 	for (int index_laser = 0; index_laser < laser.size(); ++index_laser)
 	{
 		if ((int)laser[index_laser].x + global_laser.width > ThisEnemy.x &&
@@ -410,8 +407,9 @@ void Game::CheckEnemyCollisions(Enemy & ThisEnemy)
 		{
 			--ThisEnemy.hp;
 			laser[index_laser].isAlive = false;
-			if (ThisEnemy.hp <= 0)
+			if (ThisEnemy.hp <= 0 && !accounted_for)
 			{
+				accounted_for = true;
 				game.score += 1;
 			}
 		}

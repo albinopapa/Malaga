@@ -67,6 +67,7 @@ private:
 
 	struct Global_Laser
 	{
+		float			fireRate = 16.0f;
 		int             level;
 		const int       level1_speed = 250;
 		const int       level2_speed = 375;
@@ -80,6 +81,7 @@ private:
 		const float     level2_x_offset[2] = { 10.0f,20.0f };
 		const float     level3_x_offset[3] = { 5.0f,15.0f,25.0f };
 		const float     level4_x_offset[4] = { 0.0f,10.0f,20.0f,30.0f };
+		
 		LASER_DIRECTION level1_direction[1] = { MIDDLE };
 		LASER_DIRECTION level2_direction[2] = { MIDDLE,MIDDLE };
 		LASER_DIRECTION level3_direction[3] = { MIDDLE,MIDDLE,MIDDLE };
