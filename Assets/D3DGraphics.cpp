@@ -254,6 +254,17 @@ void D3DGraphics::DrawLine( int x1,int y1,int x2,int y2,int r,int g,int blu )
 	}
 }
 
+void D3DGraphics::DrawBox(int X, int Y, int Width, int Height, D3DCOLOR Color)
+{
+	for (int y = Y; y < Y + Height; ++y)
+	{
+		for (int x = X; x < X + Width; ++x)
+		{
+			PutPixel(x, y, Color);
+		}
+	}
+}
+
 void D3DGraphics::DrawCircle( int centerX,int centerY,int radius,int r,int g,int b )
 {
 	int rSquared = radius*radius;

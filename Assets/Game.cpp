@@ -22,7 +22,7 @@
 #include <time.h>
 #include <sstream>
 #include <algorithm>
-#include "Draw_Digit.cpp"
+#include <d3d11_2.h>
 
 Game::Game(HWND hWnd, const KeyboardServer& kServer, const MouseServer& mServer)
 	: gfx(hWnd),
@@ -68,6 +68,7 @@ void Game::Go()
 	float dt = timer.GetTimeMilli() * 0.001f;
 	timer.StartWatch();
 #endif
+
 	if (kbd.SpaceIsPressed())
 	{
 		if (!space_is_pressed)
@@ -83,7 +84,6 @@ void Game::Go()
 		{
 			Update_Progression();
 			Update_Keyboard_Input(dt);
-			Deploy_Enemy(dt);
 			Update_Laser(dt);
 			Update_Enemy(dt);
 
@@ -93,16 +93,6 @@ void Game::Go()
 	gfx.BeginFrame();
 	ComposeFrame();
 	gfx.EndFrame();
-}
-
-void Game::Draw_Ship(int x, int y) {
-	for (int r = 0; r < ship.width; r++)
-	{
-		for (int c = 0; c < ship.height; c++)
-		{
-			gfx.PutPixel(x + c, y + r, 255, 255, 255);
-		}
-	}
 }
 
 void Game::Draw_Laser(int x, int y, LASER_DIRECTION direction) {
@@ -156,31 +146,6 @@ void Game::Draw_Score(int x, int y) {
 	}
 }
 
-void Game::Draw_Enemy(int x, int y,
-	unsigned char red,
-	unsigned char green,
-	unsigned char blue) {
-	for (int r = 0; r < global_enemy.width; r++)
-	{
-		for (int c = 0; c < global_enemy.height; c++)
-		{
-			gfx.PutPixel(x + r, y + c, red, green, blue);
-		}
-	}
-}
-
-void Game::Set_New_Enemy(unsigned char* color, int hp) {
-	Enemy e;
-	e.x = rand() % (799 - global_enemy.width * 2);
-	e.y = 0;
-	e.hp = hp;
-	for (int index_color = 0; index_color < 3; index_color++)
-	{
-		e.color[index_color] = color[index_color];
-	}
-	enemy.emplace_back(e);
-}
-
 void Game::Set_New_Lasers(LASER_DIRECTION* direction, const float* offset) {
 	for (int i = 0; i < global_laser.multiple; ++i)
 	{		
@@ -212,7 +177,8 @@ void Game::Set_New_Lasers(LASER_DIRECTION* direction, const float* offset) {
 	//}
 }
 
-void Game::Deploy_Enemy(float delta_time) {
+void Game::Deploy_Enemy(float delta_time) 
+{
 	if (global_enemy.wait_count >= global_enemy.wait_time)
 	{
 		if (enemy.size() < MAX_ENEMIES)
@@ -220,16 +186,20 @@ void Game::Deploy_Enemy(float delta_time) {
 			switch (game.level)
 			{
 			case 1:
-				Set_New_Enemy(global_enemy.level1_color, global_enemy.level1_hp);
+				enemy.emplace_back<Enemy>({ global_enemy.level, 
+					global_enemy.color, &global_enemy });
 				break;
 			case 2:
-				Set_New_Enemy(global_enemy.level2_color, global_enemy.level2_hp);
+				enemy.emplace_back<Enemy>({ global_enemy.level2_hp,
+					global_enemy.level2_color, &global_enemy });
 				break;
 			case 3:
-				Set_New_Enemy(global_enemy.level3_color, global_enemy.level3_hp);
+				enemy.emplace_back<Enemy>({ global_enemy.level3_hp,
+					global_enemy.level3_color, &global_enemy });
 				break;
 			case 4:
-				Set_New_Enemy(global_enemy.level4_color, global_enemy.level4_hp);
+				enemy.emplace_back<Enemy>({ global_enemy.level4_hp,
+					global_enemy.level4_color, &global_enemy });
 				break;
 			default:
 				break;
@@ -238,27 +208,6 @@ void Game::Deploy_Enemy(float delta_time) {
 		global_enemy.wait_count = 0.0f;
 	}
 	global_enemy.wait_count += delta_time;
-}
-
-void Game::Null_Mem(int index, GAME_ITEM item) {
-	if (item == ENEMY)
-	{
-		enemy[index].x = NULL;
-		enemy[index].y = NULL;
-		enemy[index].hp = NULL;
-		enemy[index].index = EMPTY;
-		for (int i = 0; i < 3; i++)
-		{
-			enemy[index].color[i] = NULL;
-		}
-	}
-	else if (item == LASER)
-	{
-		laser[index].x = NULL;
-		laser[index].y = NULL;
-		laser[index].direction = MIDDLE;
-		laser[index].index = EMPTY;
-	}
 }
 
 void Game::Update_Keyboard_Input(float delta_time) {
@@ -342,66 +291,6 @@ void Game::Update_Keyboard_Input(float delta_time) {
 	}
 }
 
-void Game::Shift_Memory(int current_index, int item_count, GAME_ITEM item) {
-	if (item == LASER)
-	{
-		// We don't need to loop if the index is the same as MAX
-		if (current_index == MAX_LASERS - 1)
-		{
-			Null_Mem(current_index, LASER);
-		}
-		else
-		{
-			// Declare index outside loop to retain value
-			// This loop takes the memory states of the adjacent state
-			// and copies it to the index. It will do this based on the
-			// index that is given to the function. Therefore the array
-			// will always be tidy since all values will be stored in the
-			// lowest available index of the memory array.
-			int index_laser;
-			for (index_laser = current_index;
-			laser[index_laser].index != EMPTY &&
-				index_laser + 1 < MAX_LASERS; index_laser++)
-			{
-				laser[index_laser].direction = laser[index_laser + 1].direction;
-				laser[index_laser].x = laser[index_laser + 1].x;
-				laser[index_laser].y = laser[index_laser + 1].y;
-				laser[index_laser].index = laser[index_laser + 1].index;
-			}
-			// This Null_Mem will clear the last memory slot that gets
-			// skipped after the last loop.
-			Null_Mem(index_laser, LASER);
-		}
-		global_laser.count--;
-	}
-	else if (item == ENEMY)
-	{
-		if (current_index == MAX_ENEMIES - 1)
-		{
-			Null_Mem(current_index, ENEMY);
-		}
-		else
-		{
-			int index_enemy;
-			for (index_enemy = current_index;
-			enemy[index_enemy].index != EMPTY &&
-				index_enemy + 1 < MAX_ENEMIES; index_enemy++)
-			{
-				enemy[index_enemy].x = enemy[index_enemy + 1].x;
-				enemy[index_enemy].y = enemy[index_enemy + 1].y;
-				enemy[index_enemy].hp = enemy[index_enemy + 1].hp;
-				enemy[index_enemy].index = enemy[index_enemy + 1].index;
-				for (int index_color = 0; index_color < 3; index_color++)
-				{
-					enemy[index_enemy].color[index_color] = enemy[index_enemy + 1].color[index_color];
-				}
-			}
-			Null_Mem(index_enemy, ENEMY);
-		}
-		global_enemy.count--;
-	}
-}
-
 void Game::Update_Progression() {
 	// Check for Level 1
 	if (game.score >= 0 && game.score < game.level2)
@@ -467,13 +356,12 @@ void Game::Update_Laser(float delta_time) {
 	}
 }
 
-void Game::Update_Enemy(float delta_time) {
-	int frameStep = delta_time * global_enemy.speed;
-	
-	// Update movement	
+void Game::Update_Enemy(float delta_time) 
+{
+	Deploy_Enemy(delta_time);
 	for (auto &e : enemy)
 	{
-		e.y += frameStep;
+		e.Update(delta_time);
 	}
 }
 
@@ -575,15 +463,8 @@ void Game::CleanVectors()
 }
 
 void Game::Restart_Game() {
-	for (int index_enemy = 0; index_enemy < MAX_ENEMIES; index_enemy++)
-	{
-		Null_Mem(index_enemy, ENEMY);
-	}
-	// Nullify laser array
-	for (int index_laser = 0; index_laser < MAX_LASERS; index_laser++)
-	{
-		Null_Mem(index_laser, LASER);
-	}
+	enemy.clear();
+	laser.clear();
 	game.is_over = false;
 	game.score = 0;
 	ship.x = 385;
@@ -596,7 +477,8 @@ void Game::ComposeFrame() {
 	if (!game.is_over)
 	{
 		// Draw ship stuff
-		Draw_Ship(ship.x, ship.y);
+		ship.Draw(gfx);
+
 		// Draw laser stuff
 		for (int index_laser = 0; index_laser < laser.size(); index_laser++)
 		{
@@ -604,14 +486,13 @@ void Game::ComposeFrame() {
 				laser[index_laser].y,
 				laser[index_laser].direction);
 		}
+
 		// Draw enemy stuff
-		for (int index_enemy = 0; index_enemy < enemy.size(); index_enemy++)
+		for (auto &e : enemy)
 		{
-			Draw_Enemy(enemy[index_enemy].x, enemy[index_enemy].y,
-				enemy[index_enemy].color[E_RED],
-				enemy[index_enemy].color[E_GREEN],
-				enemy[index_enemy].color[E_BLUE]);
-		}
+			e.Draw(gfx);
+		}		
 	}
+
 	Draw_Score(game.score_x, game.score_y);
 }

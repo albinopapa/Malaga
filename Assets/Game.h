@@ -121,11 +121,39 @@ private:
 
 	struct Enemy
 	{
+		Enemy()
+			:
+			x(0), y(0), hp(0), color({ 0,0,0 }), index(EMPTY), prop(nullptr)
+		{}
+		Enemy(int Hp, unsigned char Color[3], Global_Enemy *Props)
+			:
+			x(rand() % (SCREENWIDTH - Props->width * 2)),
+			y(0),
+			hp(Hp),			
+			index(EMPTY),
+			prop(Props)
+		{
+			for (int i = 0; i < 3; ++i)
+			{
+				color[i] = Color[i];
+			}
+		}
+		void Update(const float DT)
+		{
+			int frameStep = DT * prop->speed;
+			y += frameStep;
+		}
+		void Draw(D3DGraphics &Gfx)
+		{
+			Gfx.DrawBox(x, y, prop->width, prop->height, D3DCOLOR_XRGB(color[0], color[1], color[2]));
+		}
+		
 		float         x;
 		float         y;
 		int           hp;
 		unsigned char color[3];
 		MEMORY_STATE index = EMPTY; // default
+		Global_Enemy *prop;
 	};
 
 	struct MGame
@@ -147,11 +175,16 @@ private:
 
 	struct Ship
 	{
+		void Draw(D3DGraphics &Gfx)
+		{
+			Gfx.DrawBox(x, y, width, height, color);
+		}
 		int          x = 385;
 		const int    y = 569;
 		int          width = 30;
 		int          height = 30;
 		unsigned int speed = 250;
+		D3DCOLOR	 color = D3DCOLOR_XRGB(255, 255, 255);
 	};
 
 private:
@@ -161,13 +194,9 @@ private:
 
 	void Draw_Score(int x, int y);
 	void Draw_Digit(int digit, int x, int y);
-	void Draw_Ship(int x, int y);
 	void Draw_Laser(int x, int y, LASER_DIRECTION direction);
-	void Draw_Enemy(int x, int y, unsigned char red, unsigned char green, 
-		unsigned char blue);
 
 	void Deploy_Enemy(float delta_time);
-	void Set_New_Enemy(unsigned char* color, int hp);
 	void Update_Enemy(float delta_time);
 
 	void Set_New_Lasers(LASER_DIRECTION* direction, const float* offset);
@@ -180,8 +209,6 @@ private:
 
 	void Update_Keyboard_Input(float delta_time);
 	void Update_Progression();
-	void Null_Mem(int index, GAME_ITEM item);
-	void Shift_Memory(int current_index, int item_count, GAME_ITEM item);
 	void Restart_Game();
 
 

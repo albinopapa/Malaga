@@ -60,6 +60,7 @@ public:
 	void PutPixel( int x,int y,D3DCOLOR c );
 	D3DCOLOR GetPixel(int x, int y);
 	void DrawLine( int x1,int y1,int x2,int y2,int r,int g,int b );
+	void DrawBox(int X, int Y, int Width, int Height, D3DCOLOR Color);
 	void DrawCircle( int cx,int cy,int radius,int r,int g,int b );
 	void DrawDisc( int cx,int cy,int r,int rd,int g,int b );
 	void DrawSprite( int x,int y,Sprite* sprite );

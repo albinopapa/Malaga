@@ -22,7 +22,9 @@
     9_height = 24;
 */
 
-void Game::Draw_Digit( int digit, int x,int y ){
+void Game::Draw_Digit( int digit, int x,int y )
+{
+	D3DCOLOR color = D3DCOLOR_XRGB(218, 198, 0);
     if     ( digit == 0 )
     {
         gfx.PutPixel(1 + x, 0 + y, 218, 198, 0);
