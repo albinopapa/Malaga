@@ -53,6 +53,7 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	// A change to commit
 	// Update fire rate tracker or bullet spawn timer
 	fire_rate_tracker += frame_time;
 
