@@ -2,8 +2,8 @@
 
 class Text
 {
-public;
+public:
     Text();
-private;
+private:
 };
 

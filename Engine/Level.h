@@ -2,8 +2,8 @@
 
 class Level
 {
-public;
+public:
     Level();
-private;
+private:
 };
 

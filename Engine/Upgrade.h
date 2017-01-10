@@ -2,8 +2,8 @@
 
 class Upgrade
 {
-public;
+public:
     Upgrade();
-private;
+private:
 };
 

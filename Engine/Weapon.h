@@ -2,8 +2,8 @@
 
 class Weapon
 {
-public;
+public:
     Weapon();
-private;
+private:
 };
 

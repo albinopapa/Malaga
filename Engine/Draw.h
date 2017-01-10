@@ -2,8 +2,8 @@
 
 class Draw
 {
-public;
+public:
     Draw();
-private;
+private:
 };
 

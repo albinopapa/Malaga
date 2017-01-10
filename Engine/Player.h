@@ -2,8 +2,8 @@
 
 class Player
 {
-public;
+public:
     Player();
-private;
+private:
 };
 
