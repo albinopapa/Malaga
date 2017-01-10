@@ -1,0 +1,70 @@
+Malaga to c++
+------------
+
+Todo
+
+1. 2 player co-op
+
+Weapon types / upgrades
+----------
+1. speed upgrade [lasers]
+2. damage
+
+Ammo upgrades
+----------
+1. single shot |
+2. dual       | |
+3. triple    \ | /
+
+Ship upgrades / movement
+----------
+1. ship speed
+2. shield with own hp bar
+3. acceleration
+4. turn corners shoot toward middle from 4 edges of screen
+
+Enemy types
+----------
+1. Bricks
+    a. Stright
+    b. Last known
+    c. homing
+2. Color types / levels?
+3.
+
+Levels and difficulty
+----------
+1. enemy count per level
+2. spawn timer
+
+Concepts
+----------
+1. Stars wraps around
+2. Scaling and resolution
+
+Game Objectives and Rules
+----------
+1. Avoid enemies
+2. Shoot enemies
+3. keeps getting harder
+4. certain ammo better for certain enemies
+
+Game Screen
+----------
+1. One screen only (no shops)
+2. points til upgrade
+    To be decided
+    ----------
+    [can all be same points, just spawn timer different per color]
+    a. red bricks   -> shield
+    b. blue bricks  -> ammo
+    c. green bricks -> acceleration
+    d. pink bricks  -> ship speed
+    c. brown bricks -> bomb (destroy all enemies on screen) 
+
+3. health & shield bar
+
+Game conditions
+----------
+1. Complete Level
+    a. kill 20 count enemies?
