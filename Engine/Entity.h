@@ -2,8 +2,8 @@
 
 class Entity
 {
-public;
+public:
     Entity();
-private;
+private:
 };
 
